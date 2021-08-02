@@ -1,3 +1,4 @@
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -5,6 +6,8 @@ import java.util.Scanner;
 public class Console {
     private static Scanner scanner = new Scanner(System.in);
     private static String computerName;
+    private static String[] pathnames;
+    private static File file = new File(System.getProperty("user.dir"));
 
     static {
         try {
@@ -32,7 +35,9 @@ public class Console {
         System.out.print("$ ");
         switch (scanner.nextLine().toLowerCase().trim()) {
             case "ls":
-                return new Ls();
+                pathnames = file.list();
+                for (String s : pathnames)
+                    return new Ls();
 
             case "pwd":
                 return new Pwd();
