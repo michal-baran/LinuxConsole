@@ -1,43 +1,46 @@
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Console {
-    private static Scanner scanner = new Scanner(System.in);
-    private static String computerName;
-    private static String[] pathnames;
-    private static File file = new File(System.getProperty("user.dir"));
+    private Scanner scanner;
+    private String header;
+    static List<String> path = Arrays.asList(System.getProperty("user.dir").replaceAll(Pattern.quote("\\"), "\\\\").split("\\\\"));
+    static String[] pathnames;
 
-    static {
+    public Console() {
+        this.scanner = new Scanner(System.in);
         try {
-            computerName = InetAddress.getLocalHost().getHostName();
+            this.header = System.getProperty("user.name") + "@" + InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
     }
 
-    private static String header = System.getProperty("user.name") + "@" + computerName;
+    public static Console create() {
+        return new Console();
+    }
 
-    public static void init() {
+    public void init() {
         while (true) {
-            getHeader();
             getCommand().execute();
             System.out.println();
         }
     }
 
-    private static void getHeader() {
-        System.out.println(header);
+    private void getHeader() {
+        System.out.println(this.header);
+        System.out.print("$ ");
     }
 
-    private static Executable getCommand() {
-        System.out.print("$ ");
+    private Executable getCommand() {
+        getHeader();
         switch (scanner.nextLine().toLowerCase().trim()) {
             case "ls":
-                pathnames = file.list();
-                for (String s : pathnames)
-                    return new Ls();
+                return new Ls();
 
             case "pwd":
                 return new Pwd();
@@ -45,7 +48,7 @@ public class Console {
             case "exit":
                 return new Exit();
 
-            case "cd":
+            case "cd ..":
                 return new Cd();
 
             default:
