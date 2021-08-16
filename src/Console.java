@@ -1,17 +1,17 @@
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Console {
-    private Scanner scanner;
+    private final Scanner scanner;
     private String header;
-    static List<String> path = Arrays.asList(System.getProperty("user.dir").replaceAll(Pattern.quote("\\"), "\\\\").split("\\\\"));
-    static String[] pathnames;
+    private String path;
+    private List<String> filesInFolder;
 
     public Console() {
+        this.path = System.getProperty("user.dir").replaceAll(Pattern.quote("\\"), "\\\\");
         this.scanner = new Scanner(System.in);
         try {
             this.header = System.getProperty("user.name") + "@" + InetAddress.getLocalHost().getHostName();
@@ -25,20 +25,27 @@ public class Console {
     }
 
     public void init() {
-        while (true) {
-            getCommand().execute();
-            System.out.println();
-        }
+        getCommand().execute(this);
+        System.out.println();
+        this.init();
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public List<String> getFilesInFolder() {
+        return filesInFolder;
     }
 
     private void getHeader() {
-        System.out.println(this.header);
-        System.out.print("$ ");
+        System.out.print(this.header + " ~\n$ ");
     }
 
     private Executable getCommand() {
         getHeader();
-        switch (scanner.nextLine().toLowerCase().trim()) {
+        String input = scanner.nextLine();
+        switch (input.toLowerCase().trim().split(" ")[0]) {
             case "ls":
                 return new Ls();
 
@@ -48,11 +55,19 @@ public class Console {
             case "exit":
                 return new Exit();
 
-            case "cd ..":
-                return new Cd();
+            case "cd":
+                return new Cd(input.substring(input.indexOf(" ") + 1));
 
             default:
-                return () -> System.out.println("nie ma takiej funkcji");
+                return (param) -> System.out.println(input + ": command not found");
         }
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setFilesInFolder(List<String> filesInFolder) {
+        this.filesInFolder = filesInFolder;
     }
 }

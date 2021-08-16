@@ -1,3 +1,3 @@
 public interface Executable {
-    void execute();
+    void execute(Console console);
 }
