@@ -1,3 +1,5 @@
+import java.io.File;
+
 public class Cd implements Executable {
     String command;
 
@@ -14,7 +16,7 @@ public class Cd implements Executable {
             } catch (StringIndexOutOfBoundsException e) {
 
             }
-        } else if (console.getFilesInFolder().contains(command)){
+        } else if (console.getFilesInFolder().contains(command) & new File(path + "\\" + command).isDirectory()) {
             console.setPath(path + "\\" + command);
         } else {
             System.out.println("No such file or directory");

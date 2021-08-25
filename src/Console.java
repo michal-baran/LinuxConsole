@@ -39,7 +39,7 @@ public class Console {
     }
 
     private void getHeader() {
-        System.out.print(this.header + " ~\n$ ");
+        System.out.print(this.header + " ~" + this.path + "\n$ ");
     }
 
     private Executable getCommand() {
