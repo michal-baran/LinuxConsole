@@ -1,13 +1,16 @@
+package commands;
+import core.Data;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ls implements Executable {
-    private static StringBuilder result = new StringBuilder();
+public class Ls implements Command {
+    private static final StringBuilder result = new StringBuilder();
 
     @Override
-    public void execute(Console console) {
-        console.setFilesInFolder(listFiles(new File(console.getPath())));
+    public void execute() {
+        Data.setFilesInFolder(listFiles(new File(Data.getPath())));
     }
 
     private List<String> listFiles(final File folder) {
